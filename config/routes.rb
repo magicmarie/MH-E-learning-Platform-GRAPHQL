@@ -28,14 +28,6 @@ Rails.application.routes.draw do
   get "/organizations", to: "organizations#index"
   post "/password/change", to: "auth#change_password"
 
-  # student
-  get "/my-courses", to: "courses#index"
-
-  # Org Admin — manage users within their org
-  resource :organization, only: [ :show, :update ]
-  # GET /organization
-  # PATCH /organization
-
   resources :profiles, only: [ :show, :update, :destroy ]
   # GET /profiles/:id
   # PATCH /profiles/:id
@@ -52,6 +44,11 @@ Rails.application.routes.draw do
       get :organization # GET /users/:id/organization
     end
   end
+
+  # Org Admin — manage users within their org
+  resource :organization, only: [ :show, :update ]
+  # GET /organization
+  # PATCH /organization
 
   # Global Admin — manage everything
   namespace :admin do
@@ -110,7 +107,10 @@ Rails.application.routes.draw do
     # PATCH /courses/:id
     # DELETE /courses/:id
 
+    get "students/enrolled", to: "students#enrolled"
+    get "students/unenrolled", to: "students#unenrolled"
     post "enrollments/bulk", to: "enrollments#bulk_create"
+
     resources :enrollments, only: [ :index, :create, :update, :destroy, :show ]
     # GET /courses/:course_id/enrollments
     # GET /courses/:course_id/enrollments/:id

@@ -16,4 +16,8 @@ class EnrollmentSerializer < ActiveModel::Serializer
   def course
     object.course.name
   end
+
+  def student_email
+    object.user.email
+  end
 end
