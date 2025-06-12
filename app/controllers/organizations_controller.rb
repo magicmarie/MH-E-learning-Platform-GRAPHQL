@@ -2,7 +2,7 @@
 
 class OrganizationsController < ApplicationController
   include Authenticatable
-  include Pundit
+  include Pundit::Authorization
 
   before_action :authorize_request, only: [ :show, :update ]
   before_action :set_organization, only: [ :show, :update ]

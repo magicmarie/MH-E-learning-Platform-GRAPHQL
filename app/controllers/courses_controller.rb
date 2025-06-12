@@ -1,12 +1,13 @@
 class CoursesController < ApplicationController
   include Authenticatable
-  include Pundit
+  include Pundit::Authorization
 
   before_action :set_course, only: [ :show, :update, :destroy ]
 
   def index
     authorize Course
-    render json: policy_scope(Course).order(:semester, :year, :month).reverse
+    courses = policy_scope(Course).order(:semester, :year, :month).reverse
+    render json: courses
   end
 
   def show
@@ -19,13 +20,15 @@ class CoursesController < ApplicationController
     incoming_semester = params[:semester].to_sym
     semester_int = Constants::Semesters::SEMESTERS[incoming_semester]
 
-    if semester_int.blank?
+    unless semester_int
       return render json: { error: "Unknown semester '#{incoming_semester}'" }, status: :unprocessable_entity
     end
 
-    user = current_user
-    organization_id = user.organization_id
-    @course = Course.new(course_params.merge(semester: semester_int, user_id: user.id, organization_id: organization_id))
+    @course = Course.new(course_params.merge(
+      semester: semester_int,
+      user_id: current_user.id,
+      organization_id: current_user.organization_id
+    ))
 
     if @course.save
       render json: @course, status: :created
@@ -35,7 +38,14 @@ class CoursesController < ApplicationController
   end
 
   def update
-    if @course.update(course_params)
+    incoming_semester = params[:semester]&.to_sym
+    semester_int = Constants::Semesters::SEMESTERS[incoming_semester]
+
+    unless semester_int
+      return render json: { error: "Unknown semester '#{semester_key}'" }, status: :unprocessable_entity
+    end
+
+    if @course.update(course_params.merge(semester: semester_int))
       render json: @course
     else
       render json: @course.errors, status: :unprocessable_entity
@@ -44,14 +54,16 @@ class CoursesController < ApplicationController
 
   def destroy
     @course.destroy!
+    head :no_content
   end
 
   private
-    def set_course
-      @course = Course.find(params.expect(:id))
-    end
 
-    def course_params
-      params.permit(:name, :course_code, :month, :year, :is_completed, :semester)
-    end
+  def set_course
+    @course = Course.find(params[:id])
+  end
+
+  def course_params
+    params.permit(:name, :course_code, :month, :year, :is_completed)
+  end
 end

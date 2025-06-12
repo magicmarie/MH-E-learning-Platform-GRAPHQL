@@ -45,7 +45,7 @@ class AssessmentsController < ApplicationController
 
   def assessment_params
     if current_user.student?
-      params.require(:assessment).permit(:score, :submitted_at)
+      params.require(:assessment).permit(:score, :submitted_at, files: [])
     else
       params.require(:assessment).permit(:score, :enrollment_id, :assignment_id)
     end

@@ -5,6 +5,7 @@ class Course < ApplicationRecord
   has_many :enrollments
   has_many :users, through: :enrollments
   has_many :assignments, dependent: :destroy
+  has_many :resources, dependent: :destroy
 
   validates :name, :course_code, :semester, :month, :year, presence: true
 

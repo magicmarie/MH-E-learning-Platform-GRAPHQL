@@ -1,7 +1,7 @@
 module Admin
   class CoursesController < ApplicationController
     include Authenticatable
-    include Pundit
+    include Pundit::Authorization
 
     before_action :set_course, only: [ :show, :update, :destroy ]
 
@@ -34,7 +34,10 @@ module Admin
     end
 
     def update
-      if @course.update(course_params)
+      incoming_semester = params[:semester].to_sym
+      semester_int = Constants::Semesters::SEMESTERS[incoming_semester]
+
+      if @course.update(course_params.merge(semester: semester_int))
         render json: @course
       else
         render json: @course.errors, status: :unprocessable_entity
@@ -51,7 +54,7 @@ module Admin
       end
 
       def course_params
-        params.permit(:name, :course_code, :month, :year, :is_completed, :user_id, :organization_id, :semester)
+        params.permit(:name, :course_code, :month, :year, :is_completed, :user_id, :organization_id)
       end
   end
 end

@@ -43,8 +43,8 @@ class Admin::UsersController < ApplicationController
       role: role_int, password: temp_password, password_confirmation: temp_password))
 
     if user.save
-      token = JsonWebToken.encode({ user_id: @user.id }, 15.minutes.from_now)
-      reset_url = "#{root_url}reset_password?token=#{token}"
+      token = JsonWebToken.encode({ user_id: user.id }, 15.minutes.from_now)
+      reset_url = "http://localhost:5173/reset_password?token=#{token}"
 
       begin
         UserMailer.welcome_user(user, temp_password, reset_url).deliver_now

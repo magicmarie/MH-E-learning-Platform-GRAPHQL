@@ -2,7 +2,7 @@
 
 class Admin::OrganizationsController < ApplicationController
   include Authenticatable
-  include Pundit
+  include Pundit::Authorization
 
   def index
     authorize Organization

@@ -1,7 +1,6 @@
 module UserManagement
   extend ActiveSupport::Concern
-  include Pundit
-
+include Pundit::Authorization
   included do
     before_action :authorize_request
   end

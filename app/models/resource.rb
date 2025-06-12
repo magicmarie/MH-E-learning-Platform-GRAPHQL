@@ -1,5 +1,5 @@
 class Resource < ApplicationRecord
   belongs_to :course
 
-  has_many_attached :files, dependent: :destroy
+  has_one_attached :file, dependent: :destroy
 end

@@ -1,7 +1,7 @@
 # app/controllers/assignments_controller.rb
 class AssignmentsController < ApplicationController
   include Authenticatable
-  include Pundit
+  include Pundit::Authorization
 
   before_action :set_course
   before_action :set_assignment, only: [ :show, :update, :destroy ]
@@ -64,6 +64,6 @@ class AssignmentsController < ApplicationController
   end
 
   def assignment_params
-    params.permit(:title, :assignment_type, :max_score, :deadline)
+    params.permit(:title, :assignment_type, :max_score, :deadline, files: [])
   end
 end

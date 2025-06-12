@@ -2,7 +2,7 @@
 
 class ProfilesController < ApplicationController
   include Authenticatable
-  include Pundit
+  include Pundit::Authorization
 
   # Ensure the user is authenticated before accessing any profile actions
   before_action :authorize_request

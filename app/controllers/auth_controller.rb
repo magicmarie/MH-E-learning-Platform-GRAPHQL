@@ -11,7 +11,10 @@ class AuthController < ApplicationController
 
     if user.save
       token = JsonWebToken.encode(user_id: user.id)
-      render json: { token: token, user: user }, status: :created
+      render json: {
+        token: token,
+        user: UserSerializer.new(user).as_json
+      }, status: :created
     else
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
@@ -47,7 +50,10 @@ class AuthController < ApplicationController
     end
 
     token = JsonWebToken.encode(user_id: user.id)
-    render json: { token: token, user: user }, status: :ok
+    render json: {
+      token: token,
+      user: UserSerializer.new(user).as_json
+    }, status: :ok
   end
 
   def verify_security

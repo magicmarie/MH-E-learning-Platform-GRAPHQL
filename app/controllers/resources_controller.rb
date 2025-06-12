@@ -2,7 +2,7 @@
 
 class ResourcesController < ApplicationController
   include Authenticatable
-  include Pundit
+  include Pundit::Authorization
 
   before_action :authorize_request
   before_action :set_resource, only: [ :show, :update, :destroy ]

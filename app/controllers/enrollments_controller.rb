@@ -1,7 +1,7 @@
 # app/controllers/enrollments_controller.rb
 class EnrollmentsController < ApplicationController
   include Authenticatable
-  include Pundit
+  include Pundit::Authorization
 
   before_action :set_course
   before_action :set_enrollment, only: [ :show, :update, :destroy ]

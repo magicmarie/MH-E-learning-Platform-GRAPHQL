@@ -24,9 +24,15 @@ Rails.application.routes.draw do
   post "/signup", to: "auth#signup"
   post "/login", to: "auth#login"
   post "/login/security", to: "auth#verify_security"
+
+  # organizations
   get "/organizations/search", to: "organizations#search"
   get "/organizations", to: "organizations#index"
+
+  # Password Reset
   post "/password/change", to: "auth#change_password"
+  post "/request_password_reset", to: "passwords#create"
+  put "/reset_password", to: "passwords#update"
 
   resources :profiles, only: [ :show, :update, :destroy ]
   # GET /profiles/:id
@@ -38,7 +44,7 @@ Rails.application.routes.draw do
   # GET /students/:id
 
   resources :users, only: [ :create, :index, :update ] do
-    member do
+    member do # Adds :id to the route (i.e., users/:id/...)
       patch :activate # PATCH /users/:id/activate
       patch :deactivate # PATCH /users/:id/deactivate
       get :organization # GET /users/:id/organization
