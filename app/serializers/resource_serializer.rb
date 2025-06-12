@@ -1,7 +1,7 @@
 class ResourceSerializer < ActiveModel::Serializer
   include Rails.application.routes.url_helpers
 
-  attributes :id, :title, :description, :course_name, :files
+  attributes :id, :title, :description, :visible, :course_name, :files
 
   def course_name
     object.course&.name
