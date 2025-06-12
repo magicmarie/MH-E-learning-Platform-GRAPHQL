@@ -9,6 +9,17 @@ class ResourceSerializer < ActiveModel::Serializer
   end
 
   def created_by
-    object.user&.email
+    object.course.user&.email
+  end
+
+  def file
+    return nil unless object.file.attached?
+
+    {
+      filename: object.file.filename.to_s,
+      content_type: object.file.content_type,
+      byte_size: object.file.byte_size,
+      url: rails_blob_url(object.file, only_path: true)
+    }
   end
 end

@@ -52,6 +52,6 @@ class ResourcesController < ApplicationController
   end
 
   def resource_params
-    params.permit(:course_id, :title, :description, files: [])
+    params.permit(:course_id, :title, :description, :file)
   end
 end
