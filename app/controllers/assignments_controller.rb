@@ -1,4 +1,5 @@
-# app/controllers/assignments_controller.rb
+# frozen_string_literal: true
+
 class AssignmentsController < ApplicationController
   include Authenticatable
   include Pundit::Authorization

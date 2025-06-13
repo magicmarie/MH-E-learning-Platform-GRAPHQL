@@ -1,6 +1,6 @@
 module UserManagement
   extend ActiveSupport::Concern
-include Pundit::Authorization
+  include Pundit::Authorization
   included do
     before_action :authorize_request
   end
@@ -21,7 +21,7 @@ include Pundit::Authorization
     if user.active?
       render json: { message: "User is already active" }
     else
-      user.update(active: true)
+      user.update(active: true, activated_by_id: current_user.id)
       render json: { message: "User activated" }
     end
   end
@@ -49,10 +49,19 @@ include Pundit::Authorization
     end
   end
 
+  def destroy
+    user = find_user_in_scope(params[:id])
+    return render_not_found unless user
+
+    authorize user
+    user.destroy
+    head :no_content
+  end
+
   private
 
   def user_params
-    params.permit(:email, :role, :organization)
+    params.permit(:email, :role, :organization_id)
   end
 
   def find_user_in_scope(id)

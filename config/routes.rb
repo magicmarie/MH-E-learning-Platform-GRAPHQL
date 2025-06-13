@@ -9,9 +9,7 @@ Rails.application.routes.draw do
   if Rails.env.development? || Rails.env.test?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
     mount Sidekiq::Web => "/sidekiq"
-  end
-
-  if Rails.env.production?
+  elsif Rails.env.production?
     Sidekiq::Web.use Rack::Auth::Basic, "Protected Area" do |username, password|
       ActiveSupport::SecurityUtils.secure_compare(username, ENV["SIDEKIQ_USER"]) &
         ActiveSupport::SecurityUtils.secure_compare(password, ENV["SIDEKIQ_PASSWORD"])
@@ -25,84 +23,67 @@ Rails.application.routes.draw do
   post "/login", to: "auth#login"
   post "/login/security", to: "auth#verify_security"
 
-  # organizations
-  get "/organizations/search", to: "organizations#search"
-  get "/organizations", to: "organizations#index"
+  # organizations -- all users
+  resources :organizations, only: [ :index ] do
+    collection do
+      get :search
+    end
+  end
+
+  # -- Org admin
+  resource :organization, only: [ :show, :update ]
+  # GET /organization
+  # PATCH /organization
 
   # Password Reset
   post "/password/change", to: "auth#change_password"
   post "/request_password_reset", to: "passwords#create"
   put "/reset_password", to: "passwords#update"
 
-  resources :profiles, only: [ :show, :update, :destroy ]
-  # GET /profiles/:id
-  # PATCH /profiles/:id
-  # DELETE /profiles/:id
+  resources :user_profiles, only: [ :show, :update ]
+  # GET /user_profiles/:id
+  # PATCH /user_profiles/:id
 
   resources :students, only: [ :index, :show ]
   # GET /students
   # GET /students/:id
 
-  resources :users, only: [ :create, :index, :update ] do
-    member do # Adds :id to the route (i.e., users/:id/...)
+  concern :user_routes do
+    member do
       patch :activate # PATCH /users/:id/activate
       patch :deactivate # PATCH /users/:id/deactivate
       get :organization # GET /users/:id/organization
+      post :bulk_create # POST /users/:id/bulk_create
+    end
+
+    collection do
+      post :bulk_create
     end
   end
 
-  # Org Admin — manage users within their org
-  resource :organization, only: [ :show, :update ]
-  # GET /organization
-  # PATCH /organization
+  resources :users, only: [ :create, :index, :update, :destroy ], concerns: :user_routes
+  # GET /users
+  # POST /users
+  # PATCH /users/:id
+  # DELETE /users/:id
+  # user_member_actions urls too
 
-  # Global Admin — manage everything
+  # Global Admin
   namespace :admin do
     get "organizations/stats", to: "organizations#index_stats" # GET /admin/organizations/stats
 
     resources :organizations, only: [ :index, :create, :show, :update, :destroy ]
-    # GET /admin/organizations
     # POST /admin/organizations
     # GET /admin/organizations/:id
     # PATCH /admin/organizations/:id
     # DELETE /admin/organizations/:id
 
-    resources :users, only: [ :create, :index, :update ] do
-      member do
-        patch :activate # PATCH /admin/users/:id/activate
-        patch :deactivate # PATCH /admin/users/:id/deactivate
-        get :organization # GET /admin/users/:id/organization
-      end
-    end
-
-    resources :courses, only: [ :index, :create, :update, :destroy, :show ] do
-      # GET /admin/courses
-      # POST /admin/courses
-      # GET /admin/courses/:id
-      # PATCH /admin/courses/:id
-      # DELETE /admin/courses/:id
-
-      post "enrollments/bulk", to: "enrollments#bulk_create"
-      resources :enrollments, only: [ :index, :create, :update, :destroy, :show ]
-      # GET /admin/courses/:course_id/enrollments
-      # GET /admin/courses/:course_id/enrollments/:id
-      # POST /admin/courses/:course_id/enrollments
-      # PATCH /admin/courses/:course_id/enrollments/:id
-      # DELETE /admin/courses/:course_id/enrollments/:id
-
-      resources :assignments, only: [ :index, :create, :update, :destroy, :show ]
-      # GET /admin/courses/:course_id/assignments
-      # GET /admin/courses/:course_id/assignments/:id
-      # POST /admin/courses/:course_id/assignments
-      # PATCH /admin/courses/:course_id/assignments/:id
-      # DELETE /admin/courses/:course_id/assignments/:id
-
-      resources :assessments, only: [ :index, :create, :update, :show ]
-      # GET /admin/courses/:course_id/assessments
-      # POST /admin/courses/:course_id/assessments
-      # GET /admin/courses/:course_id/assessments/:id
-      # PATCH /admin/courses/:course_id/assessments/:id
-    end
+    resources :users, only: [ :create, :index, :update, :destroy ], concerns: :user_routes
+    # GET /admin/users
+    # POST /admin/users
+    # PATCH /admin/users/:id
+    # DELETE /admin/users/:id
+    # user_member_actions urls too, add admin before users.
   end
 
   # Global Admin || Org Admin || Teacher

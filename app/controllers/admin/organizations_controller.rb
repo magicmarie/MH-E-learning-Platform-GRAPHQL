@@ -4,11 +4,6 @@ class Admin::OrganizationsController < ApplicationController
   include Authenticatable
   include Pundit::Authorization
 
-  def index
-    authorize Organization
-    render json: Organization.all
-  end
-
   def create
     authorize Organization
     org = Organization.new(org_params)

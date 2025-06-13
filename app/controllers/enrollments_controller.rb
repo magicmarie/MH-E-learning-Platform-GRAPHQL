@@ -1,4 +1,5 @@
-# app/controllers/enrollments_controller.rb
+# frozen_string_literal: true
+
 class EnrollmentsController < ApplicationController
   include Authenticatable
   include Pundit::Authorization

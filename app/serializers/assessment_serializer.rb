@@ -7,7 +7,7 @@ class AssessmentSerializer < ActiveModel::Serializer
         filename: file.filename.to_s,
         content_type: file.content_type,
         byte_size: file.byte_size,
-        url: rails_blob_url(file, only_path: true)
+        url: rails_blob_url(file, host: "http://localhost:3000")
       }
     end
   end

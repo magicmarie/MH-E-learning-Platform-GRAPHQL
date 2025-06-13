@@ -1,18 +1,14 @@
 class OrganizationPolicy < ApplicationPolicy
-  def index?
+  def create?
     user.global_admin?
   end
 
-  def create?
-    index?
-  end
-
   def destroy?
-    index?
+    user.global_admin?
   end
 
   def index_stats?
-    index?
+    user.global_admin?
   end
 
   def show?

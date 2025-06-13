@@ -23,7 +23,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def deactivate?
-    activate? # same logic as activate
+    activate?
   end
 
   def update?
@@ -31,6 +31,10 @@ class UserPolicy < ApplicationPolicy
   end
 
   def destroy?
+    activate?
+  end
+
+  def bulk_create?
     user.global_admin? || user.org_admin?
   end
 
@@ -46,8 +50,6 @@ class UserPolicy < ApplicationPolicy
         scope.where(organization_id: user.organization_id)
       elsif user.teacher?
         scope.where(organization_id: user.organization_id, role: :student)
-      elsif user.student?
-        scope.where(id: user.id)
       else
         scope.none
       end

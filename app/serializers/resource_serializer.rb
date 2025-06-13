@@ -19,7 +19,7 @@ class ResourceSerializer < ActiveModel::Serializer
       filename: object.file.filename.to_s,
       content_type: object.file.content_type,
       byte_size: object.file.byte_size,
-      url: rails_blob_url(object.file, only_path: true)
+      url: rails_blob_url(object.file, host: "http://localhost:3000")
     }
   end
 end

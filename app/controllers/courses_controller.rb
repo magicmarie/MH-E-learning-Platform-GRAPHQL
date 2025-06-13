@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CoursesController < ApplicationController
   include Authenticatable
   include Pundit::Authorization
@@ -64,6 +66,12 @@ class CoursesController < ApplicationController
   end
 
   def course_params
-    params.permit(:name, :course_code, :month, :year, :is_completed)
+    base_params = [ :name, :course_code, :month, :year, :is_completed ]
+
+    if current_user.global_admin?
+      base_params += [ :user_id, :organization_id ]
+    end
+
+    params.permit(*base_params)
   end
 end

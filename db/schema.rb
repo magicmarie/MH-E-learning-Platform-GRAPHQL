@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_12_152626) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_13_023524) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -113,6 +113,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_12_152626) do
     t.index ["course_id"], name: "index_resources_on_course_id"
   end
 
+  create_table "user_profiles", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "first_name", default: ""
+    t.string "last_name", default: ""
+    t.string "org_member_id"
+    t.text "bio", default: ""
+    t.string "phone_number", default: ""
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_profiles_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
@@ -127,6 +139,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_12_152626) do
     t.string "security_answer_digest"
     t.jsonb "settings"
     t.datetime "reset_password_token_used_at"
+    t.integer "activated_by_id"
     t.index ["active"], name: "index_users_on_active"
     t.index ["deactivated_by_id"], name: "index_users_on_deactivated_by_id"
     t.index ["organization_id"], name: "index_users_on_organization_id"
@@ -142,6 +155,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_12_152626) do
   add_foreign_key "enrollments", "courses"
   add_foreign_key "enrollments", "users"
   add_foreign_key "resources", "courses"
+  add_foreign_key "user_profiles", "users"
   add_foreign_key "users", "organizations"
   add_foreign_key "users", "users", column: "deactivated_by_id"
 end

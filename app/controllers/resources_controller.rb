@@ -8,7 +8,7 @@ class ResourcesController < ApplicationController
   before_action :set_resource, only: [ :show, :update, :destroy ]
 
   def index
-    @resources = policy_scope(Resource)
+    @resources = policy_scope(Resource).where(course_id: params[:course_id])
     render json: @resources
   end
 
@@ -52,6 +52,6 @@ class ResourcesController < ApplicationController
   end
 
   def resource_params
-    params.permit(:course_id, :title, :description, :file)
+    params.permit(:title, :description, :file)
   end
 end
