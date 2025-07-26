@@ -9,7 +9,7 @@ class Rack::Attack
   end
 
   # Custom response
-  self.throttled_response = lambda do |env|
+  self.throttled_responder = lambda do |env|
     [ 429, { "Content-Type" => "application/json" }, [ { error: "Too many requests" }.to_json ] ]
   end
 end

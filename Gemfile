@@ -59,3 +59,13 @@ group :development, :test do
 end
 
 gem "rack-attack", "~> 6.7"
+
+group :test do
+  gem "rspec-rails"          # main test framework
+  gem "factory_bot_rails"    # factories for test data
+  gem "faker"                # fake data for factories
+  gem "database_cleaner-active_record" # cleans DB between tests
+  gem "shoulda-matchers"     # common model/controller matchers
+  gem "timecop"              # freeze or manipulate time in tests
+  gem "rails-controller-testing" # allows `assigns` and `assert_template`
+end
