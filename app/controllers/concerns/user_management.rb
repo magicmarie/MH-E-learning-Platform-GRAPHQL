@@ -61,7 +61,7 @@ module UserManagement
   private
 
   def user_params
-    params.permit(:email, :role, :organization_id)
+    params.permit(:email)
   end
 
   def find_user_in_scope(id)
