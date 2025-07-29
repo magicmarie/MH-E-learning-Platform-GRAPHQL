@@ -39,6 +39,8 @@ class UserPolicy < ApplicationPolicy
   end
 
   def show?
+    return false unless user
+
     user.org_admin? || user.global_admin? || user.teacher? || user.student?
   end
 
@@ -49,7 +51,7 @@ class UserPolicy < ApplicationPolicy
       elsif user.org_admin?
         scope.where(organization_id: user.organization_id)
       elsif user.teacher?
-        scope.where(organization_id: user.organization_id, role: :student)
+        scope.where(organization_id: user.organization_id, role: Constants::Roles::ROLES[:student])
       else
         scope.none
       end

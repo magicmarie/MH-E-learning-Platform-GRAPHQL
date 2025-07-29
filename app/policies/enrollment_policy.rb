@@ -2,22 +2,32 @@
 
 class EnrollmentPolicy < ApplicationPolicy
   def index?
+    return false unless user
+
     user.global_admin? || user.org_admin? || teacher_owns_course?
   end
 
   def show?
+    return false unless user
+
     user.global_admin? || user.org_admin? || teacher_owns_course? || student_self?
   end
 
   def create?
+    return false unless user
+
     user.global_admin? || user.org_admin? || teacher_owns_course?
   end
 
   def update?
+    return false unless user
+
     user.global_admin? || user.org_admin? || teacher_owns_course?
   end
 
   def destroy?
+    return false unless user
+
     user.global_admin? || user.org_admin? || teacher_owns_course?
   end
 
@@ -33,6 +43,8 @@ class EnrollmentPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
+      return scope.none unless user
+
       if user.global_admin?
         scope.all
       elsif user.org_admin?

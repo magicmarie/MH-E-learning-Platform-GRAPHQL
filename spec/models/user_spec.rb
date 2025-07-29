@@ -57,7 +57,7 @@ RSpec.describe User, type: :model do
   end
 
   describe "custom validation: only_one_global_admin" do
-    it "disallows more than one global admin" do
+    it "forbids more than one global admin" do
       create(:user, :global_admin)
       another = build(:user, :global_admin)
       expect(another).not_to be_valid

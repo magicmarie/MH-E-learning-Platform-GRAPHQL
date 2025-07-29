@@ -2,6 +2,8 @@
 
 class CoursePolicy < ApplicationPolicy
   def index?
+    return false unless user
+
     admins_or_teacher? || user.student?
   end
 
@@ -26,11 +28,15 @@ class CoursePolicy < ApplicationPolicy
   end
 
   def admins_or_teacher?
+    return false unless user
+
     user.global_admin? || user.org_admin? || user.teacher?
   end
 
   class Scope < Scope
     def resolve
+      return scope.none unless user
+
       if user.global_admin?
         scope.all
       elsif user.org_admin?

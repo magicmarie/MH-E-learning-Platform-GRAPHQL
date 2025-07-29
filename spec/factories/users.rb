@@ -23,9 +23,5 @@ FactoryBot.define do
       active { false }
       deactivated_at { Time.current }
     end
-
-    after(:create) do |user|
-      create(:user_profile, user: user) unless user.global_admin?
-    end
   end
 end
