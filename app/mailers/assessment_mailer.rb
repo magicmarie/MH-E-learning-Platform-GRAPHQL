@@ -9,6 +9,6 @@ class AssessmentMailer < ApplicationMailer
       @updated_at = assessment.updated_at.strftime("%B %d, %Y at %I:%M %p")
       @score = assessment.score
 
-      mail(to: @user.email, subject: "Assessment update!")
+      mail(to: @user_email, subject: "Assessment update!")
     end
 end

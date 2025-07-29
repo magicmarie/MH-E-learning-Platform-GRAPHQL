@@ -12,7 +12,6 @@ The system supports two main user roles:
 - **Organization Admin:** Manages users within their organization.
 - **Teachers and Students:** Belong to organizations and can log in to the system.
 
-
 ---
 
 ## Technologies Used
@@ -23,7 +22,8 @@ The system supports two main user roles:
 - JWT (JSON Web Tokens for auth)
 - Sidekiq + Redis (background jobs for sending emails)
 - ActiveModel Serializers (JSON serialization)
-- Letter Opener (for email preview in development)
+- Rails Action Mailer (email handling & delivery)
+- RSpec-Rails (testing framework for unit, integration, and policy specs)
 
 ---
 
@@ -54,4 +54,10 @@ rails reset_and_seed
 
 ```
 rails s
+```
+
+## Running tests
+
+```
+bundle exec rspec
 ```
