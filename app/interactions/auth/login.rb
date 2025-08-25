@@ -6,6 +6,8 @@ module Auth
     integer :organization_id, default: nil
     string :security_answer, default: nil
 
+    validate :organization_id_required_unless_global_admin
+
     def execute
       user = find_user
       return error("Invalid credentials", :unauthorized) unless user&.authenticate(password)
@@ -26,7 +28,16 @@ module Auth
       if organization_id.present?
         User.find_by(email: email, organization_id: organization_id)
       else
-        User.find_by(email: email)
+        User.global_admins.find_by(email: email)
+      end
+    end
+
+    def organization_id_required_unless_global_admin
+      return if organization_id.present?
+
+      # Check if this email belongs to THE global admin
+      unless User.global_admins.exists?(email: email)
+        errors.add(:organization_id, "is required")
       end
     end
 

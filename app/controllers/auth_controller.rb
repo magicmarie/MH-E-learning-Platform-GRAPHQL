@@ -6,8 +6,7 @@ class AuthController < ApplicationController
   before_action :authorize_request, only: [ :change_password ]
 
   def signup
-    org = Organization.find(params[:organization_id])
-    result = Auth::Signup.run(organization: org, email: params[:email],
+    result = Auth::Signup.run(organization_id: params[:organization_id], email: params[:email],
                               password: params[:password], role: params[:role])
     if result.valid?
       render json: result.result, status: :created

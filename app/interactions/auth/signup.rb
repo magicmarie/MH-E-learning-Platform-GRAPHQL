@@ -6,9 +6,18 @@ module Auth
 
     def execute
       organization = Organization.find_by(id: organization_id)
-      return errors.add(:base, "Organization not found") unless organization
+      unless organization
+        errors.add(:base, "Organization not found")
+        return nil
+      end
 
-      user = organization.users.new(email: email, password: password, role: role)
+      role_integer = Constants::Roles::ROLES[role.to_sym]
+      unless role_integer
+        errors.add(:role, "Invalid role: #{role}")
+        return nil
+      end
+
+      user = organization.users.new(email: email, password: password, role: role_integer)
 
       if user.save
         token = JsonWebToken.encode(user_id: user.id)

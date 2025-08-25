@@ -15,6 +15,7 @@ FactoryBot.define do
 
     trait :global_admin do
       role { Constants::Roles::ROLES[:global_admin] }
+      organization { nil }  # Global admins have no organization
       security_question { "What is your favorite animal?" }
       security_answer { "Roxy" }
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_29_212111) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_20_212346) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -142,6 +142,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_29_212111) do
     t.integer "activated_by_id"
     t.index ["active"], name: "index_users_on_active"
     t.index ["deactivated_by_id"], name: "index_users_on_deactivated_by_id"
+    t.index ["email", "organization_id"], name: "index_users_on_email_and_org_id", unique: true, where: "(organization_id IS NOT NULL)"
+    t.index ["email"], name: "index_users_on_email_global_admin", unique: true, where: "(organization_id IS NULL)"
     t.index ["organization_id"], name: "index_users_on_organization_id"
   end
 

@@ -4,10 +4,8 @@ class Auth::ChangePassword < ActiveInteraction::Base
   string :new_password
 
   def execute
-    unless user.authenticate(current_password)
-      errors.add(:base, "Incorrect password")
-      return nil
-    end
+    return add_error("Incorrect password") unless user.authenticate(current_password)
+    return add_error("Password can't be blank") if new_password.blank?
 
     if user.update(password: new_password)
       { message: "Password updated successfully" }
@@ -15,5 +13,12 @@ class Auth::ChangePassword < ActiveInteraction::Base
       errors.merge!(user.errors)
       nil
     end
+  end
+
+  private
+
+  def add_error(message)
+    errors.add(:base, message)
+    nil
   end
 end

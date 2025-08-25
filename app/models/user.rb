@@ -11,6 +11,7 @@ class User < ApplicationRecord
 
 
   validates :email, presence: true, uniqueness: { scope: :organization_id }
+  validates :password, presence: true, length: { minimum: 8 }, allow_nil: true
   validates :role, presence: true, inclusion: { in: [
     Constants::Roles::ROLES[:global_admin],
     Constants::Roles::ROLES[:org_admin],
