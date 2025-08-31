@@ -1,4 +1,6 @@
-# LMS API
+# LMS GRAPHQL API
+
+## This project was originally built as a REST API. I am currently transforming it into a GraphQL API as part of my learning journey with GraphQL.
 
 This application provides a backend API to manage users, organizations, and authentication flows with roles such as **Global Admin**, **Organization Admin**, **Teacher**, and **Student**. It supports secure login with JWT and bcrypt, two-step verification for admins, organization-based access, and email notifications for new users with temporary passwords.
 
