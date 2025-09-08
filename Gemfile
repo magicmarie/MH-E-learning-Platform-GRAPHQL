@@ -19,6 +19,7 @@ gem "active_model_serializers"
 gem "aws-sdk-s3", require: false
 gem "csv"
 gem "active_interaction"
+gem "graphql"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -53,6 +54,7 @@ group :development, :test do
   gem "dotenv-rails"
   gem "letter_opener"
   gem "letter_opener_web"
+  gem 'graphiql-rails'
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false

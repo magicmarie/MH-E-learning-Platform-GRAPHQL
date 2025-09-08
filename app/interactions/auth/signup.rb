@@ -23,7 +23,7 @@ module Auth
         token = JsonWebToken.encode(user_id: user.id)
         {
           token: token,
-          user: UserSerializer.new(user).as_json
+          user: user
         }
       else
         errors.merge!(user.errors)
