@@ -41,26 +41,23 @@ module Auth
       end
     end
 
-    def error(message, status)
+    def error(message)
       errors.add(:base, message)
       {
-        status: status,
         error: message
       }
     end
 
     def mfa_prompt
       {
-        status: :partial_content,
         message: "MFA required"
       }
     end
 
     def success(token:, user:)
       {
-        status: :ok,
         token: token,
-        user: ActiveModelSerializers::SerializableResource.new(user)
+        user: user
       }
     end
   end

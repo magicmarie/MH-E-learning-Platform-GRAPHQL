@@ -3,14 +3,12 @@ module Mutations
     class Login < Mutations::BaseMutation
       argument :email, String, required: true
       argument :password, String, required: true
-      argument :organization_id, ID, required: true
+      argument :organization_id, ID, required: false
       argument :security_answer, String, required: false
 
-      field :token, String, null: true
-      field :user, Types::UserType, null: true
-      field :errors, [String], null: false
+      field :auth_payload, Types::AuthPayloadType, null: true
 
-      def resolve(email:, password:, organization_id:, security_answer: nil)
+      def resolve(email:, password:, organization_id: nil, security_answer: nil)
         result = ::Auth::Login.run(
           email: email,
           password: password,
@@ -18,12 +16,16 @@ module Mutations
           security_answer: security_answer
         )
 
-        # status = result.result[:status] || :unprocessable_entity
+        if result.valid?
+          payload = result.result
 
-        if result.valid? || result.result[:status] == :partial_content
-          { user: result.result[:user], token: result.result[:token], errors: [] }
+          if payload[:message] == "MFA required"
+            { auth_payload: { message: "MFA required", errors: [] } }
+          else
+            { auth_payload: { token: payload[:token], user: payload[:user], message: nil, errors: [] } }
+          end
         else
-          { user: nil, token: nil, errors: result.errors.full_messages }
+          { auth_payload: { errors: result.errors.full_messages || [] } }
         end
       end
     end

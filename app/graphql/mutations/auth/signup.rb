@@ -7,7 +7,6 @@ module Mutations
       argument :role, String, required: true
 
       field :auth_payload, Types::AuthPayloadType, null: true
-      field :errors, [String], null: false
 
       def resolve(organization_id:, email:, password:, role:)
         result = ::Auth::Signup.run(
@@ -18,9 +17,9 @@ module Mutations
         )
 
         if result.valid?
-          { auth_payload: result.result, errors: [] }
+          { auth_payload: { token: result.result[:token], user: result.result[:user], errors: [] } }
         else
-          { auth_payload: nil, errors: result.errors.full_messages }
+          { auth_payload: { errors: result.errors.full_messages } }
         end
       end
     end
